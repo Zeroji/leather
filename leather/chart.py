@@ -32,6 +32,9 @@ class Chart(object):
         self._scales = [None, None]
         self._axes = [None, None]
 
+        self._show_tick_lines = [True, True]
+        self._show_tick_labels = [True, True]
+
     def _palette(self):
         """
         Return a generator for series colors.
@@ -49,6 +52,30 @@ class Chart(object):
         See :meth:`.Chart.set_x_scale`.
         """
         self._scales[Y] = scale
+
+    def show_tick_lines(self, axis, show):
+        """
+        Show or hide tick lines.
+
+        :param axis:
+            The axis to change, i.e. `1` or `y`
+        :param show:
+            Whether or not to show the tick lines.
+        """
+        axis = 1 if axis in (1, 'y', 'left') else 0
+        self._show_tick_lines[axis] = show
+
+    def show_tick_labels(self, axis, show):
+        """
+        Show or hide tick labels.
+
+        :param axis:
+            The axis to change, i.e. `1` or `y`
+        :param show:
+            Whether or not to show the tick labels.
+        """
+        axis = 1 if axis in (1, 'y', 'left') else 0
+        self._show_tick_labels[axis] = show
 
     def add_x_scale(self, domain_min, domain_max):
         """
@@ -318,8 +345,10 @@ class Chart(object):
         axes_group = ET.Element('g')
         axes_group.set('transform', svg.translate(left_margin, 0))
 
-        axes_group.append(x_axis.to_svg(canvas_width, canvas_height, x_scale, 'bottom'))
-        axes_group.append(y_axis.to_svg(canvas_width, canvas_height, y_scale, 'left'))
+        axes_group.append(x_axis.to_svg(canvas_width, canvas_height, x_scale, 'bottom',
+                                        self._show_tick_lines[0], self._show_tick_labels[0]))
+        axes_group.append(y_axis.to_svg(canvas_width, canvas_height, y_scale, 'left',
+                                        self._show_tick_lines[1], self._show_tick_labels[1]))
 
         header_group.set('transform', svg.translate(left_margin, 0))
 

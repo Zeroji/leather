@@ -54,7 +54,7 @@ class Axis(object):
 
         return margin
 
-    def to_svg(self, width, height, scale, orient):
+    def to_svg(self, width, height, scale, orient, show_lines, show_labels):
         """
         Render this axis to SVG elements.
         """
@@ -120,55 +120,57 @@ class Axis(object):
             # Tick line
             projected_value = scale.project(value, range_min, range_max)
 
-            if value == 0:
-                tick_color = theme.zero_color
-            else:
-                tick_color = theme.tick_color
+            if show_lines:
+                if value == 0:
+                    tick_color = theme.zero_color
+                else:
+                    tick_color = theme.tick_color
 
-            if orient == 'left':
-                y1 = projected_value
-                y2 = projected_value
+                if orient == 'left':
+                    y1 = projected_value
+                    y2 = projected_value
 
-            elif orient == 'bottom':
-                x1 = projected_value
-                x2 = projected_value
+                elif orient == 'bottom':
+                    x1 = projected_value
+                    x2 = projected_value
 
-            tick = ET.Element('line',
-                x1=six.text_type(x1),
-                y1=six.text_type(y1),
-                x2=six.text_type(x2),
-                y2=six.text_type(y2),
-                stroke=tick_color
-            )
-            tick.set('stroke-width', six.text_type(theme.tick_width))
+                tick = ET.Element('line',
+                    x1=six.text_type(x1),
+                    y1=six.text_type(y1),
+                    x2=six.text_type(x2),
+                    y2=six.text_type(y2),
+                    stroke=tick_color
+                )
+                tick.set('stroke-width', six.text_type(theme.tick_width))
 
-            tick_group.append(tick)
+                tick_group.append(tick)
 
             # Tick label
-            if orient == 'left':
-                x = label_x
-                y = projected_value
-                dy = '0.32em'
-                text_anchor = 'end'
-            elif orient == 'bottom':
-                x = projected_value
-                y = label_y
-                dy = '1em'
-                text_anchor = 'middle'
+            if show_labels:
+                if orient == 'left':
+                    x = label_x
+                    y = projected_value
+                    dy = '0.32em'
+                    text_anchor = 'end'
+                elif orient == 'bottom':
+                    x = projected_value
+                    y = label_y
+                    dy = '1em'
+                    text_anchor = 'middle'
 
-            label = ET.Element('text',
-                x=six.text_type(x),
-                y=six.text_type(y),
-                dy=dy,
-                fill=theme.label_color
-            )
-            label.set('text-anchor', text_anchor)
-            label.set('font-family', theme.tick_font_family)
+                label = ET.Element('text',
+                    x=six.text_type(x),
+                    y=six.text_type(y),
+                    dy=dy,
+                    fill=theme.label_color
+                )
+                label.set('text-anchor', text_anchor)
+                label.set('font-family', theme.tick_font_family)
 
-            value = tick_formatter(value, i, tick_count)
-            label.text = six.text_type(value)
+                value = tick_formatter(value, i, tick_count)
+                label.text = six.text_type(value)
 
-            tick_group.append(label)
+                tick_group.append(label)
 
         if zero_tick_group is not None:
             group.append(zero_tick_group)
