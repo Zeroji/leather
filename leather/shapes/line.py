@@ -46,7 +46,10 @@ class Line(Shape):
         )
         path.set('stroke-width', six.text_type(self._width))
         if self._stroke_dasharray != theme.STROKE_DASHARRAY_NONE:
-            path.set('stroke-dasharray', self._stroke_dasharray)
+            dasharray = self._stroke_dasharray
+            if isinstance(dasharray, list) or isinstance(dasharray, tuple):
+                dasharray = ','.join(map(str, dasharray))
+            path.set('stroke-dasharray', dasharray)
 
         return path
 
