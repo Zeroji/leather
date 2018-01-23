@@ -47,8 +47,9 @@ warnings.formatwarning = lambda message, category, filename, lineno, line=None: 
     formatwarning_orig(message, category, filename, lineno, line='')
 
 warn = warnings.warn
-warnings.resetwarnings()
-warnings.simplefilter('always')
+with warnings.catch_warnings():
+    warnings.resetwarnings()
+    warnings.simplefilter('always')
 
 
 # In Python 3.5 use builtin C implementation of `isclose`
